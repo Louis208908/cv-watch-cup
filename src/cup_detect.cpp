@@ -16,7 +16,7 @@ class ImageConverter{
     image_transport::Publisher image_pub_;
 
 public:
-    ros::Publisher pub = nh_.advertise<std_msgs::String>("cup", 1);
+    ros::Publisher pub;
     std_msgs::String str;
     int xPosition;
     int yPosition;
@@ -26,8 +26,9 @@ public:
     it_(nh_)  //assign nh_ to it_
     {
     // Subscrive to input video feed and publish output video feed
-        image_sub_ = it_.subscribe("image_raw", 1, &ImageConverter::imageCb, this);
+        image_sub_ = it_.subscribe("/camera/color/image_raw", 1, &ImageConverter::imageCb, this);
         image_pub_ = it_.advertise("/image_converter/output_video", 1);
+        pub = nh_.advertise<std_msgs::String>("cup", 1);
         cv::namedWindow(OPENCV_WINDOW);
     }
 
@@ -49,12 +50,21 @@ public:
         std::stringstream strstr;
         int width = 1280;
         int height = 720;
-        nh_.getParam("XPose", xPosition);
+        xPosition = 0;
+        yPosition = 0;
+        CupDistance = 30;
+        int circleSize = 20;
+        nh_.param<int>("XPose", xPosition, 300);
+        // nh_.getParam("/XPose", xPosition);
+        nh_.param<int>("YPose", yPosition, 300);
+        nh_.param<int>("cupDistance", CupDistance, 30);
+        nh_.param<int>("circleSize", circleSize, 20);
+        // nh_.getParam("/YPose", yPosition);
+
+        // printf("%d %d",xPosition,yPosition);
         
-        nh_.getParam("YPose", yPosition);
+        // nh_.getParam("/cupDistance",CupDistance);
         
-        nh_.getParam("cupDistance",CupDistance);
-        int circleSize = 10;
         int r = 0;
         int g = 0;
         int b = 0;
