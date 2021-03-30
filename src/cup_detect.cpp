@@ -9,7 +9,6 @@
 static const std::string OPENCV_WINDOW = "Image window";
 
 
-
 class ImageConverter{
     ros::NodeHandle nh_;
     image_transport::ImageTransport it_;
